@@ -17,7 +17,7 @@ jobs:
           set -e
           TODAY=$(date -u +%Y-%m-%d)
           declare -A PLAN=( ["2026-08-31"]=1 )
-          n=${{PLAN[$TODAY]:-0}}
+          n=${PLAN[$TODAY]:-0}
           if [ "$n" -eq 0 ]; then echo "nothing scheduled for $TODAY"; exit 0; fi
           git config user.name "Arunendra21"
           git config user.email "156455722+Arunendra21@users.noreply.github.com"
@@ -26,7 +26,7 @@ jobs:
           released=0
           for round in $(seq 1 "$n"); do
             next=""
-            for it in "${{order[@]}}"; do
+            for it in "${order[@]}"; do
               if git cat-file -e refs/remotes/origin/vault:"$it" 2>/dev/null && [ ! -e "$it" ]; then next="$it"; break; fi
             done
             if [ -z "$next" ]; then echo "vault drained"; break; fi
