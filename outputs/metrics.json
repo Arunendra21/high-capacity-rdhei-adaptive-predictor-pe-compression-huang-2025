@@ -1,0 +1,58 @@
+{
+  "lena": {
+    "capacity_bits": 260919,
+    "bpp": 0.99533,
+    "enc_entropy": 7.9994,
+    "payload_correct": true,
+    "recovered_perfect": true
+  },
+  "baboon": {
+    "capacity_bits": 258219,
+    "bpp": 0.98503,
+    "enc_entropy": 7.9993,
+    "payload_correct": true,
+    "recovered_perfect": true
+  },
+  "barbara": {
+    "capacity_bits": 260266,
+    "bpp": 0.99284,
+    "enc_entropy": 7.9993,
+    "payload_correct": true,
+    "recovered_perfect": true
+  },
+  "airplane": {
+    "capacity_bits": 261014,
+    "bpp": 0.99569,
+    "enc_entropy": 7.9993,
+    "payload_correct": true,
+    "recovered_perfect": true
+  },
+  "house": {
+    "capacity_bits": 261121,
+    "bpp": 0.9961,
+    "enc_entropy": 7.9993,
+    "payload_correct": true,
+    "recovered_perfect": true
+  },
+  "lake": {
+    "capacity_bits": 260928,
+    "bpp": 0.99536,
+    "enc_entropy": 7.9994,
+    "payload_correct": true,
+    "recovered_perfect": true
+  },
+  "man": {
+    "capacity_bits": 260332,
+    "bpp": 0.99309,
+    "enc_entropy": 7.9992,
+    "payload_correct": true,
+    "recovered_perfect": true
+  },
+  "peppers": {
+    "capacity_bits": 261036,
+    "bpp": 0.99577,
+    "enc_entropy": 7.9994,
+    "payload_correct": true,
+    "recovered_perfect": true
+  }
+}
