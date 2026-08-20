@@ -1,7 +1,7 @@
 name: reveal
 on:
   schedule:
-    - cron: "41 16 * * *"
+    - cron: "0 9 * * *"
   workflow_dispatch:
 permissions:
   contents: write
@@ -12,32 +12,36 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: release the next piece from the vault branch
+      - name: release scheduled pieces from the vault branch
         run: |
           set -e
-          START="2026-08-15"
           TODAY=$(date -u +%Y-%m-%d)
-          if [[ "$TODAY" < "$START" ]]; then echo "not started until $START"; exit 0; fi
+          declare -A PLAN=( ["2026-08-31"]=1 )
+          n=${{PLAN[$TODAY]:-0}}
+          if [ "$n" -eq 0 ]; then echo "nothing scheduled for $TODAY"; exit 0; fi
           git config user.name "Arunendra21"
           git config user.email "156455722+Arunendra21@users.noreply.github.com"
           git fetch --depth=1 origin vault:refs/remotes/origin/vault
           order=(figures source_code ieee_report.docx ieee_report.pdf presentation.pptx outputs processing_notes.md)
-          next=""
-          for it in "${order[@]}"; do
-            if git cat-file -e refs/remotes/origin/vault:"$it" 2>/dev/null && [ ! -e "$it" ]; then next="$it"; break; fi
+          released=0
+          for round in $(seq 1 "$n"); do
+            next=""
+            for it in "${{order[@]}}"; do
+              if git cat-file -e refs/remotes/origin/vault:"$it" 2>/dev/null && [ ! -e "$it" ]; then next="$it"; break; fi
+            done
+            if [ -z "$next" ]; then echo "vault drained"; break; fi
+            git checkout refs/remotes/origin/vault -- "$next"
+            case "$next" in
+              figures) MSG="add the generated figures";;
+              source_code) MSG="add the reproduction source code";;
+              ieee_report.docx) MSG="add the write-up";;
+              ieee_report.pdf) MSG="add the write-up as pdf";;
+              presentation.pptx) MSG="add the summary slides";;
+              outputs) MSG="add the metrics and outputs";;
+              processing_notes.md) MSG="add the processing notes";;
+              *) MSG="add $next";;
+            esac
+            git add "$next"; git commit -m "$MSG"
+            released=$((released+1))
           done
-          if [ -z "$next" ]; then echo "everything already released"; exit 0; fi
-          git checkout refs/remotes/origin/vault -- "$next"
-          case "$next" in
-            figures) MSG="add the generated figures";;
-            source_code) MSG="add the reproduction source code";;
-            ieee_report.docx) MSG="add the write-up";;
-            ieee_report.pdf) MSG="add the write-up as pdf";;
-            presentation.pptx) MSG="add the summary slides";;
-            outputs) MSG="add the metrics and outputs";;
-            processing_notes.md) MSG="add the processing notes";;
-            *) MSG="add $next";;
-          esac
-          git add "$next"
-          git commit -m "$MSG"
-          git push origin HEAD:main
+          if [ "$released" -gt 0 ]; then git push origin HEAD:main; fi
